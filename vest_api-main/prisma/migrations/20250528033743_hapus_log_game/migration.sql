@@ -5,7 +5,7 @@
 
 */
 -- DropForeignKey
-ALTER TABLE `gamestatuslog` DROP FOREIGN KEY `GameStatusLog_gameStatusId_fkey`;
+ALTER TABLE `GameStatusLog` DROP FOREIGN KEY `GameStatusLog_gameStatusId_fkey`;
 
 -- DropTable
-DROP TABLE `gamestatuslog`;
+DROP TABLE `GameStatusLog`;

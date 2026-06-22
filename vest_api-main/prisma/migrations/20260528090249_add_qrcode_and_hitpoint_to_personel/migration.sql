@@ -5,7 +5,7 @@
 
 */
 -- AlterTable
-ALTER TABLE `personel` ADD COLUMN `hitpoint` INTEGER NOT NULL DEFAULT 0,
+ALTER TABLE `Personel` ADD COLUMN `hitpoint` INTEGER NOT NULL DEFAULT 0,
     ADD COLUMN `qrcode` VARCHAR(191) NULL;
 
 -- CreateIndex
