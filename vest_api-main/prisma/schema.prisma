@@ -1,0 +1,89 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// Table User
+//============================================================================================================================================
+model User {
+  id       Int    @id @default(autoincrement())
+  username String?
+  email    String @unique
+  password String
+}
+//============================================================================================================================================
+
+// Table inti
+//============================================================================================================================================
+model Esp32 {
+  id           Int      @id @default(autoincrement())
+  mac_address  String?   @unique
+  qrcode       String?   @unique
+  isUsed       Boolean?  @default(false) // Tambahkan kolom ini
+
+  players    Personel[]
+}
+
+model Personel {
+  id            Int      @id @default(autoincrement())
+  PlayerID      Int?     @unique
+  name          String?  @unique
+  selectedTeam  TeamEnum?  
+  statusReady   Boolean  @default(false)
+  statusWeapon  Boolean  @default(false)
+  health        Int      @default(100)
+
+  esp32         Esp32?    @relation(fields: [PlayerID], references: [id], onDelete: Cascade)
+  Hitpoint      Hitpoint[]
+  HitpointLog   HitpointLog[]
+}
+
+enum TeamEnum {
+  TeamA
+  TeamB
+}
+//============================================================================================================================================
+
+// Table Gameplay
+//============================================================================================================================================
+model GameStatus {
+  id         Int  @id // HAPUS @default(autoincrement())
+  status     Int // Menggunakan Int untuk status (0 = idle, 1 = running, 2 = finished)
+  sessionId  String? // UUID sesi aktif saat ini
+
+}
+
+model Hitpoint {
+  id          Int      @id @default(autoincrement())
+  name        String?    
+  team        TeamEnum?
+  hitpoint    Int?
+  sensorId    Int?           // Sensor primary yang kena langsung (1-37)
+  spreadSensors String?      // Sensor sebaran, format JSON array "[11,13,14]"
+  adcValue    Int?           // Kekuatan tembakan dari hardware
+  sessionId   String?        // Menyimpan ID sesi
+  timestamp   DateTime @default(now())
+
+  personelName  Personel?   @relation( fields: [name], references: [name], onDelete: Cascade)
+}
+//============================================================================================================================================
+
+// Table Log/History
+//============================================================================================================================================
+model HitpointLog {
+  id          Int      @id @default(autoincrement())
+  name        String?
+  hitpoint    Int?
+  sensorId    Int?           // Sensor primary yang kena langsung (1-37)
+  spreadSensors String?      // Sensor sebaran, format JSON array "[11,13,14]"
+  adcValue    Int?           // Kekuatan tembakan dari hardware
+  sessionId   String?        // Menyimpan ID sesi
+  timestamp   DateTime @default(now())
+
+  playerName    Personel?   @relation(fields: [name], references: [name], onDelete: Cascade)
+}
+//============================================================================================================================================
